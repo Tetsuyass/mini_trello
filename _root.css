@@ -1,0 +1,244 @@
+:root {
+    --arriere-plan: #1A1A1B;
+    --fond-carte: #2D2D30;
+    --accent-principal: #D64045;
+    --text-main: #F8F9FA;
+    --text-dim: #A5A5A5;
+    --border: #454545;
+    --shadow: rgba(0, 0, 0, 0.5);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--arriere-plan);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bandeau-haut-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--fond-carte);
+    padding: 20px 30px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin: 0 auto 40px auto;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.profil-image-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.profil-image-carree {
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    border: 4px solid var(--accent-principal);
+    object-fit: cover;
+    box-shadow: 0 8px 25px var(--shadow);
+    filter: drop-shadow(0 0 10px rgba(214, 64, 69, 0.2));
+}
+
+input[type="text"], textarea, select {
+    background: #121212;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 12px 15px;
+    border-radius: 8px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent-principal);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(214, 64, 69, 0.2);
+}
+
+.barre-de-recherche {
+    flex: 1;
+    max-width: 400px;
+}
+
+button {
+    background-color: var(--accent-principal);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #b33539;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(214, 64, 69, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.nouvelle-tache-formulaire {
+    background: var(--fond-carte);
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 5px solid var(--accent-principal);
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px var(--shadow);
+}
+
+.nouvelle-tache-formulaire form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.liste-taches-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+[class*="-wrapper"] > h2 {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    color: var(--accent-principal);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.carte-tache {
+    background: var(--fond-carte);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.carte-tache:hover {
+    border-color: var(--accent-principal);
+    transform: scale(1.02);
+}
+
+.carte-tache-titre {
+    color: var(--text-main);
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.carte-tache-description {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.carte-tache-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.carte-tache-statut {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: var(--arriere-plan);
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: var(--accent-principal);
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid rgba(214, 64, 69, 0.2);
+}
+
+.carte-tache button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    flex: 1;
+}
+
+.carte-tache button.btn-modifier {
+    background-color: var(--accent-principal);
+}
+
+.carte-tache button.btn-supprimer {
+    background-color: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+}
+
+.carte-tache button.btn-supprimer:hover {
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.05);
+}
+
+.nombre-tache-statut {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 15px;
+    opacity: 0.7;
+}
+
+footer {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+}
+
+@media (max-width: 900px) {
+    .liste-taches-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .bandeau-haut-wrapper {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .barre-de-recherche {
+        width: 100%;
+        max-width: none;
+    }
+
+    .profil-image-carree {
+        width: 150px;
+        height: 150px;
+    }
+}
