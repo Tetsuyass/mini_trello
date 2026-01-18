@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<!--ce code est commenté le plus possible, à part le CSS parce que ça aurait été vrmt long-->
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/formNouvelleTache.js"></script>
+    <link rel="stylesheet" href="../css/_root.css">
+    <title>Mini Trello</title>
+</head>
+<header>
+    <div></div>
+</header>
+<body>
+    <div x-data="todoApp()" x-init="init()"
+         @tache-ajoutee.window="ajouterTache($event.detail.titre, $event.detail.description)"
+         @tache-modifiee.window="modifierTache($event.detail.id, $event.detail.details)"
+         class="app-container">
+        <!--Le corps de l'appli-->
+        <div class="profil-image-wrapper">
+            <img src="../assets/goth-girl-cutie.jpg" class="profil-image-carree">
+        </div>
+        <div class="bandeau-haut-wrapper">
+            <div class="bandeau-haut-item">
+                <button @click="$dispatch('ouvrir-formulaire')">Ajouter une tâche</button>
+                <!--la on utilise un evenement sinon le scope est pas bon pour montrer le form-->
+            </div>
+            <div class="bandeau-haut-item">
+                <!--pour la recherche, le but va etre de faire en sorte que lorsque l'utilisateur tape une lettre, la liste se réactualise tout de suite.-->
+                <input type="text"
+                       x-model="recherche"
+                       placeholder="Rechercher une tâche..."
+                       class="barre-de-recherche">
+            </div>
+        </div>
+        <div x-data="formHandler()" x-show="show"
+             @ouvrir-formulaire.window="show = true"
+             @preparer-modification.window="ouvrirPourModification($event.detail)"
+             class="nouvelle-tache-formulaire">
+            <h2 x-text="modifId ? 'Modifier la tâche' : 'Nouvelle tâche'"></h2>
+            <!--on écoute ici le signal qu'on a défini précedemment-->
+            <form @submit.prevent="submitForm()" > <!--la on bloque la soumission par défaut HTML pour implémenter notre soumission-->
+                <input type="text" x-model="formData.title" placeholder="Titre..." required>
+                <textarea x-model="formData.desc" placeholder="Description..." required></textarea>
+                <!--pas besoin de définir un statut vu que celui par défaut est à faire-->
+                <!--mais on utilise aussi ce form pour la modif de tâches, donc on rajoute un champ-->
+                <div class="formulaire-statut-modif-container" x-show="modifId !== null">
+                    <label>Changer le statut :</label>
+                    <select x-model="formData.statut" class="formulaire-statut-modif">
+                        <option value="a faire">A faire></option>
+                        <option value="en cours">En cours</option>
+                        <option value="fini">Fini</option>
+                    </select>
+                </div>
+                <button type="submit" x-text="modifId ? 'Enregistrer les modifications' : 'Créer la tâche'"></button>
+                <button type="reset">Réinitialiser</button>
+            </form>
+        </div>
+        <div class="liste-taches-wrapper">
+            <div class="liste-taches-a-faire-wrapper">
+                <h2 class="liste-taches-a-faire-title">A faire</h2>
+                <!--dérouler les tâches "a faire" en mémoire avec template-->
+                <!--on a adapté pour prendre en compte la fonction de recherche de tâches par titre aussi-->
+                <template x-for="tache in taches.filter(t =>
+                    t.statut === 'a faire' &&
+                    t.title.toLowerCase().includes(recherche.toLowerCase())
+                    )" :key="tache.id">
+                    <div class="carte-tache">
+                        <h3 x-text="tache.title" class="carte-tache-titre"></h3>
+                        <p x-text="tache.desc" class="carte-tache-description"></p>
+                        <p x-text="tache.statut" class="carte-tache-statut"></p>
+                        <button @click="$dispatch('preparer-modification', tache)" class="btn-modifier">Modifier</button>
+                        <button @click="supprimerTache(tache.id)" class="btn-supprimer">Supprimer</button>
+                    </div>
+                </template>
+                <h3 class="nombre-tache-statut">Nombre de tâches à faire : <span x-text="taches.filter(t => t.statut === 'a faire').length"></span></h3>
+            </div>
+            <div class="liste-taches-en-cours-wrapper">
+                <h2 class="liste-taches-en-cours-title">En cours</h2>
+                <!--dérouler les tâches "en cours" en mémoire-->
+                <!--on a adapté pour prendre en compte la fonction de recherche de tâches par titre aussi-->
+                <template x-for="tache in taches.filter(t =>
+                          t.statut === 'en cours' &&
+                          t.title.toLowerCase().includes(recherche.toLowerCase())
+                          )"
+                          :key="tache.id">
+                    <div class="carte-tache">
+                        <h3 x-text="tache.title" class="carte-tache-titre"></h3>
+                        <p x-text="tache.desc" class="carte-tache-description"></p>
+                        <p x-text="tache.statut" class="carte-tache-statut"></p>
+                        <button @click="$dispatch('preparer-modification', tache)" class="btn-modifier">Modifier</button>
+                        <button @click="supprimerTache(tache.id)" class="btn-supprimer">Supprimer</button>
+                    </div>
+                </template>
+                <h3 class="nombre-tache-statut">Nombre de tâches en cours : <span x-text="taches.filter(t => t.statut === 'en cours').length"></span></h3>
+            </div>
+            <div class="liste-taches-fini-wrapper">
+                <h2 class="liste-taches-fini-title">Fini</h2>
+                <!--dérouler les tâches "fini" en mémoire-->
+                <!--on a adapté pour prendre en compte la fonction de recherche de tâches par titre aussi-->
+                <template x-for="tache in taches.filter(t =>
+                          t.statut === 'fini' &&
+                          t.title.toLowerCase().includes(recherche.toLowerCase())
+                          )"
+                          :key="tache.id">
+                    <div class="carte-tache">
+                        <h3 x-text="tache.title" class="carte-tache-titre"></h3>
+                        <p x-text="tache.desc" class="carte-tache-description"></p>
+                        <p x-text="tache.statut" class="carte-tache-statut"></p>
+                        <button @click="$dispatch('preparer-modification', tache)" class="btn-modifier">Modifier</button>
+                        <button @click="supprimerTache(tache.id)" class="btn-supprimer">Supprimer</button>
+                    </div>
+                </template>
+                <h3 class="nombre-tache-statut">Nombre de tâches finies : <span x-text="taches.filter(t => t.statut === 'fini').length"></span></h3>
+            </div>
+        </div>
+    </div>
+</body>
+<footer>
+    &copy; Touts droits réservés.<br> Efrei 2026. <br> Vincent, Thibaut, Ismael et Nikolas.
+</footer>
+</html>
